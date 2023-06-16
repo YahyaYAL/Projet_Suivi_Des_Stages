@@ -1,65 +1,109 @@
 <?php
-$nom = $_POST['nom'];
-$prenom = $_POST['prenom'];
-$dateNaissance = $_POST['dateNaissance'];
-$section = $_POST['section'];
-$option = $_POST['option'];
-$annee = $_POST['annee'];
-$telephone = $_POST['telephone'];
-$email = $_POST['email'];
+// Vérifier si le formulaire a été soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-//connexion à la base de données
-include('connexion_mysql.php');
+    // Connexion à la base de données
+    include('connexion.php');
+    include('requetesSql.php');
+	include('fonctions.php');
+	
+	// Stocker les valeurs du $_POST dans une sessiton
+	stockerPostSession();
 
-// Vérifier l'existence de la section
-$sqlSection = "SELECT id FROM classes WHERE classe = '" . $section."'";
-$resultatSection = mysqli_query($db, $sqlSection);
-if (mysqli_num_rows($resultatSection) != 0) {
-    $rowSection = mysqli_fetch_assoc($resultatSection);
-    $sectionId = $rowSection['id'];
-} else {
-	echo  mysqli_error($db) ;
-}
+    $nom = testInput($_POST['nom']);
+    $prenom = testInput($_POST['prenom']);
+    $dateNaissance = testInput($_POST['dateNaissance']);
+    $section = testInput($_POST['section']);
+    $option = testInput($_POST['option']);
+    $annee = testInput($_POST['annee']);
+    $telephone = testInput($_POST['telephone']);
+    $email = testInput($_POST['email']);
 
-// Vérifier l'existence de l'option
-$sqlOption = "SELECT id FROM options WHERE options.option = '". $option ."'";
-$resultatOption = mysqli_query($db, $sqlOption);
-if (mysqli_num_rows($resultatOption) != 0) {
-    $rowOption = mysqli_fetch_assoc($resultatOption);
-    $optionId = $rowOption['id'];
-} else {
+
+    // Vérification du format
+    $erreur = '';
+    $err = '';
+
+    $err = verifierNom($nom);
+    $erreur .= $err;
+
+    $err = verifierNom($prenom);
+    $erreur .= $err;
+
+    $err = verifierDate($dateNaissance);
+    $erreur .= $err;
+
+    $err = verifierTelephone($telephone);
+    $erreur .= $err;
+
+    $err = verifierEmail($email);
+    $erreur .= $err;
+
+
+    if ($erreur != '') {
+        header('Location: pageSaisiEtudiant.php?' . $erreur);
+        exit();
+    } else {
+
+            // Récupérer l'id de la section
+            $stmtSection = $connexion->prepare($sqlSectionId);
+            $stmtSection->bindParam(':section', $section);
+            $stmtSection->execute();
+            $rowSection = $stmtSection->fetch(PDO::FETCH_ASSOC);
+            $sectionId = $rowSection['id'];
+
+            // Récupérer l'id de l'option
+            $stmtOption = $connexion->prepare($sqlOptionId);
+            $stmtOption->bindParam(':option', $option);
+            $stmtOption->execute();
+            $rowOption = $stmtOption->fetch(PDO::FETCH_ASSOC);
+            $optionId = $rowOption['id'];
+
+            // Récupérer l'id de l'année
+            $stmtAnnee = $connexion->prepare($sqlAnneeId);
+            $stmtAnnee->bindParam(':annee', $annee);
+            $stmtAnnee->execute();
+            $rowAnnee = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
+            $anneeId = $rowAnnee['id'];
+
+            // Requête d'insertion des données dans la table etudiants
+            $stmtInsertEtudiant = $connexion->prepare($sqlInsertEtudiant);
+
+    		$chiNom = chiffrerDonnee($nom);
+    		$chiPrenom = chiffrerDonnee($prenom);
+    		$chiDate = chiffrerDonnee($dateNaissance);
+            $chiTelephone = chiffrerDonnee($telephone);
+            $chiMail = chiffrerDonnee($email);
+
+
+            $stmtInsertEtudiant->bindParam(':nom', $chiNom);
+            $stmtInsertEtudiant->bindParam(':prenom', $chiPrenom);
+            $stmtInsertEtudiant->bindParam(':dateNaissance', $chiDate);
+            $stmtInsertEtudiant->bindParam(':sectionId', $sectionId);
+            $stmtInsertEtudiant->bindParam(':optionId', $optionId);
+            $stmtInsertEtudiant->bindParam(':anneeId', $anneeId);
+            $stmtInsertEtudiant->bindParam(':telephone', $chiTelephone);
+            $stmtInsertEtudiant->bindParam(':email', $chiMail);
+
+            // Exécution de la requête
+            if ($stmtInsertEtudiant->execute()) {
+                // Redirection vers page_saisi.php avec un message de succès
+                //header("Location: pageSaisiEtudiant.php");
+                //exit();
+                echo "C'est ok !" ;
+            	supprimerPost();
+            } else {
+                // Redirection vers page_saisi.php avec un message d'erreur
+                //header("Location: pageSaisiEtudiant.php");
+                //exit();
+                echo "Opps! " . $stmtInsertEtudiant->errorInfo();
+            }
     
-	echo  mysqli_error($db) ;
+        // Fermer la connexion
+        $connexion = null;
+    }
+}else
+{
+    header('Location: ../index.php');
 }
-
-
-$sqlAnnee = "SELECT id FROM annees WHERE annee = '" . $annee . "'";
-$resultatAnnee = mysqli_query($db, $sqlAnnee);
-if (mysqli_num_rows($resultatAnnee) != 0) {
-    $rowAnnee = mysqli_fetch_assoc($resultatAnnee);
-    $anneeId = $rowAnnee['id'];
-} else {
-    
-	echo  mysqli_error($db) ;
-}
-
-// Requête d'insertion des données dans la table etudiants
-$sqlInsertEtudiant = "INSERT INTO etudiants 
-    (nom, prenom, dateNaissance, classe, _option, annee, telephone, mail) 
-    VALUES ('$nom', '$prenom', '$dateNaissance', '$sectionId', '$optionId', '$anneeId', '$telephone', '$email')";
-
-// Exécution de la requête
-if (mysqli_query($db, $sqlInsertEtudiant)) {
-	// Redirection vers page_saisi.php avec un message de succès
-    //header("Location: page_saisi.php?message=success");
-    //exit();
-	echo "C'est ok! " . mysqli_error($db) ;
-} else {
-	// Redirection vers page_saisi.php avec un message d'erreur
-    //header("Location: page_saisi.php?message=error");
-    //exit();
-	echo $sqlAnnee;
-	echo "Opps! " . mysqli_error($db) ;
-}
-
 ?>

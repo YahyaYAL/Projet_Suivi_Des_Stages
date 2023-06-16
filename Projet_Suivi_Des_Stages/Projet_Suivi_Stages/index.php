@@ -17,7 +17,7 @@
 <body>
     <main>
         <div class="login-container">
-            <form action="php/verification.php" method="post">
+            <form action="php/verification.php" method="post" autocomplete="off">
                 <div>
                     <img src="images/profil_img.png" alt="">
                 </div>
@@ -27,8 +27,6 @@
                 <input type="submit" id='submit' value='LOGIN' >
 				<?php
  					if(isset($_GET['erreur'])){
- 						$err = $_GET['erreur'];
- 						if($err==1 || $err==2)
  							echo "<p style='color:#fd9956'>Identifiant ou mot de passe incorrect</p>";
  						}
  				?>

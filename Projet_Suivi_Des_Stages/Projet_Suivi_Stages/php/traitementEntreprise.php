@@ -1,53 +1,88 @@
 <?php
-$nom = $_POST['nom'];
-//$chef = $_POST['chef'];
-//$siret = $_POST['siret'];
-$adresse = $_POST['adresse'];
-$ville = $_POST['ville'];
-$codePostal = $_POST['codepostal'];
-$telephone = $_POST['telephone'];
-$email = $_POST['email'];
-$service = $_POST["service"];
-$siteweb = $_POST['siteweb'];
+
+// Vérifier si le formulaire a été soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+	include('connexion.php');
+	include('requetesSql.php');
+	include('fonctions.php');
+
+	// Stocker les valeurs du $_POST dans une sessiton
+	stockerPostSession();
 
 
-//connexion à la base de données
-include('connexion_mysql.php');
+	$nom = testInput($_POST['nom']);
+	//$chef = $_POST['chef'];
+	$adresse = testInput($_POST['adresse']);
+	$ville = testInput($_POST['ville']);
+	$codePostal = testInput($_POST['codepostal']);
+	$telephone = testInput($_POST['telephone']);
+	$email = testInput($_POST['email']);
+	$service = testInput($_POST["service"]);
+	$siteweb = testInput($_POST['siteweb']);
 
-$sqlServiceId = " SELECT id 
-					FROM services
-                    WHERE service = '" . $service . "'";
 
-$resultServiceId = mysqli_query($db, $sqlServiceId);
+	// Vérification du format
+    $erreur = '';
+    $err = '';
 
-if ($row = mysqli_fetch_assoc($resultServiceId)) {
-    $serviceId = $row['id'];
-} else {
-    // Traitement en cas de résultat vide ou d'erreur
-    $serviceId = null;
+	$err = verifierNom($nom);
+    $erreur .= $err;
+
+	$err = verifierTelephone($telephone);
+    $erreur .= $err;
+
+	$err = verifierEmail($email);
+    $erreur .= $err;
+
+
+	if ($erreur != '') {
+        header('Location: pageSaisiEntreprise.php?' . $erreur);
+        exit();
+    } else {
+    
+    	// Récupérer l'id du service
+    	$stmtServiceId = $connexion->prepare($sqlServiceId);
+    	$stmtServiceId->bindParam(':service', $service);
+    	$stmtServiceId->execute();
+    	$rowServiceId = $stmtServiceId->fetch(PDO::FETCH_ASSOC);
+    	$serviceId = $rowServiceId['id'];
+
+    	$chiNom = chiffrerDonnee($nom);
+        $chiTelephone = chiffrerDonnee($telephone);
+        $chiMail = chiffrerDonnee($email);
+    
+    	// Requête d'insertion des données dans la table entreprises
+    	$stmtInsertEntreprise = $connexion->prepare($sqlInsertEntreprise);
+    
+    	$stmtInsertEntreprise->bindParam(':nom', $chiNom);
+    	$stmtInsertEntreprise->bindParam(':adresse', $adresse);
+    	$stmtInsertEntreprise->bindParam(':ville', $ville);
+    	$stmtInsertEntreprise->bindParam(':codePostal', $codePostal);
+    	$stmtInsertEntreprise->bindParam(':telephone', $chiTelephone);
+    	$stmtInsertEntreprise->bindParam(':email', $chiMail);
+    	$stmtInsertEntreprise->bindParam(':serviceId', $serviceId);
+    	$stmtInsertEntreprise->bindParam(':siteweb', $siteweb);
+
+    	// Exécution de la requête
+    	if ($stmtInsertEntreprise->execute()) {
+       		// Redirection vers page_saisi.php avec un message de succès
+        	// header("Location: page_saisi.php?message=success");
+        	// exit();
+        	echo "C'est ok !";
+        	supprimerPost();
+    	} else {
+        	// Redirection vers page_saisi.php avec un message d'erreur
+        	// header("Location: page_saisi.php?message=error");
+        	// exit();
+        	echo "Opps! : " . $stmtInsertEntreprise->errorInfo();
+    	}
+
+		// Fermer la connexion
+		$connexion = null;
+    }
+}else
+{
+    header('Location: ../index.php');
 }
-
-// Requête d'insertion des données dans la table entreprises
-$sqlInsertEntreprise = "INSERT INTO entreprises 
-    (nom, adresse, ville, codePostal, telephone, mail, service, siteWeb) 
-    VALUES ('$nom', '$adresse', '$ville', '$codePostal', '$telephone', '$email', $serviceId, '$siteweb')";
-
-// Affichage de la requête
-echo "Requête exécutée : " . $sqlInsertEntreprise . "<br>";
-
-
-// Exécution de la requête
-if (mysqli_query($db, $sqlInsertEntreprise)) {
-	// Redirection vers page_saisi.php avec un message de succès
-    //header("Location: page_saisi.php?message=success");
-    //exit();
-	echo "La requête d'insertion a été exécutée avec succès." . mysqli_error($db);
-} else {
-	// Redirection vers page_saisi.php avec un message d'erreur
-    //header("Location: page_saisi.php?message=error");
-    //exit();
-	// Erreur lors de l'exécution de la requête
-    echo "Opps! : " . mysqli_error($db);
-}
-
 ?>
