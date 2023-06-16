@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mar. 06 juin 2023 à 18:39
+-- Généré le : ven. 16 juin 2023 à 20:41
 -- Version du serveur : 10.5.19-MariaDB-0+deb11u2
 -- Version de PHP : 7.4.33
 
@@ -22,6 +22,29 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `Suivi_Des_Stages` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `Suivi_Des_Stages`;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `activite`
+--
+
+DROP TABLE IF EXISTS `activite`;
+CREATE TABLE IF NOT EXISTS `activite` (
+  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `service` varchar(64) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des services des entreprises';
+
+--
+-- Déchargement des données de la table `activite`
+--
+
+INSERT INTO `activite` (`id`, `service`, `description`) VALUES
+(1, 'Développement web', ''),
+(2, 'Développement d applications', ''),
+(3, 'Informatique', NULL);
 
 -- --------------------------------------------------------
 
@@ -120,33 +143,28 @@ INSERT INTO `classes` (`id`, `classe`, `description`) VALUES
 DROP TABLE IF EXISTS `entreprises`;
 CREATE TABLE IF NOT EXISTS `entreprises` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(64) NOT NULL,
+  `nom` varchar(256) NOT NULL,
   `adresse` varchar(128) NOT NULL,
   `ville` varchar(32) NOT NULL,
   `codePostal` varchar(5) NOT NULL,
-  `telephone` varchar(10) NOT NULL,
-  `mail` varchar(32) NOT NULL,
+  `telephone` varchar(256) NOT NULL,
+  `mail` varchar(255) NOT NULL,
   `service` smallint(6) NOT NULL,
   `siteWeb` varchar(64) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Service` (`service`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des entreprises';
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des entreprises';
 
 --
 -- Déchargement des données de la table `entreprises`
 --
 
 INSERT INTO `entreprises` (`id`, `nom`, `adresse`, `ville`, `codePostal`, `telephone`, `mail`, `service`, `siteWeb`, `description`) VALUES
-(1, 'blabla', 'rerfreer', 'zeffe', '37000', '1111111111', 'toto@gmail.com', 1, 'RGRSTGSRTG', NULL),
-(2, 'yahya ', 'rfrtftr', 'Tours', '37000', '0751068721', 'algalmash@gmail.com', 1, 'https://www.youtube.com', NULL),
-(3, 'yahya ', 'rfrtftr', 'Tours', '37000', '0751068721', 'algalmash@gmail.com', 1, 'https://www.bidule.com', NULL),
-(4, 'grtrtg', 'rtgrtgrt', 'rtbrtgrt', '37000', '4545454545', 'algalmash@gmail.com', 3, 'REGRTGRTG', NULL),
-(5, 'THYTHJ', 'TSRHBDT', 'RTGBTYN', '37000', '4545454545', 'dggtrgrth@gmail.com', 3, 'yujuyujyjG', NULL),
-(6, 'THYTHJ', 'TSRHBDT', 'RTGBTYN', '37000', '4545454545', 'dggtrgrth@gmail.com', 1, 'yujuyujyjG', NULL),
-(7, 'rtgrtgrt', 'rgtrt', 'rtrgtgrt', '37000', '2323232323', 'algalmash@gmail.com', 2, 'ERRTGGTRGRT', NULL),
-(8, 'rvrvrgvg', 'rvrbvrg', 'rtrtvvrvr', '37000', '0751068721', 'algalmash@gmail.com', 2, 'https://www.youtube.com', NULL),
-(10, 'yahya AL_GALMASH', '2 Rue Du Docteur LECCIA', 'Tours', '37000', '0751068721', 'algalmash@gmail.com', 1, 'fvrggrfgvgfv', NULL);
+(23, '9Fw9G3dvFA+s/XnBVVrst01nTvTGqIAkCYI/9Ggr/LU=', 'dfgfdfdf', 'dgdf', 'dff', 'DJ1/cj+fHIVdDzKY3MbtT6kFnpbN8Cd/Jf8IOpvkrwA=', 'TC9fFju3XrKwxoFXYke5j+oq70dvtDP1oddggAWmfb0=', 3, 'erergerg', NULL),
+(24, 'pH1ewMi9MrQjtbu0CE38w2Y9d75S6UhfpObmkECGeu0=', 'dfgfdfdf', 'dgdf', 'dff', 'ULHuHbv2iFN727majEmjIdi8/++zh8pZALNx2ytv30A=', 'VFjJNx+C+Ya5KaT3HKS8rb5NmfRHdkf2fe3gxgSCRp0=', 3, 'erergerg', NULL),
+(25, 'elGbcp1d4PgGzeqfq28IfUctKhhePBy5K2g4XbkWsfE=', '123 Rue Principale', 'Villeville', '12345', 'om1Ih/UGRWSh99Rq0Jtb0mARrZQAfvHAEuyb7zcO0ZI=', 'z1QN+eO+4Im6OjxbcSqPCvhzaxmHniyUm+MN2a0qpt65x3QG2/m5FszuBxZIXKy0', 2, 'www.abccorp.com', NULL),
+(29, 'Sie843Cb6LUb2eAwgV1/bjX65kbgSR6o6U7/WWcJn0f737F8kWx5RRYwaTxy1kU4', '123 Avenue de l\\\'Innovation', 'Techville', '98765', 'qP9fZTYR7tFyVmalyKRJXCy+TuFwDByocpG1E33aN3Q=', 'RLUAuGivLxqFPyg/HG2Nvy1Sa7xJaDJdPhIjRByRQPAALR8RPaFRysJjxtpvvSR5', 2, 'www.technosoft.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -157,26 +175,29 @@ INSERT INTO `entreprises` (`id`, `nom`, `adresse`, `ville`, `codePostal`, `telep
 DROP TABLE IF EXISTS `etudiants`;
 CREATE TABLE IF NOT EXISTS `etudiants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(32) NOT NULL,
-  `prenom` varchar(32) NOT NULL,
-  `dateNaissance` date NOT NULL,
+  `nom` varchar(256) NOT NULL,
+  `prenom` varchar(256) NOT NULL,
+  `dateNaissance` varchar(256) NOT NULL,
   `classe` smallint(6) NOT NULL,
   `_option` smallint(6) NOT NULL,
   `annee` tinyint(4) NOT NULL,
-  `telephone` varchar(10) NOT NULL,
-  `mail` varchar(32) NOT NULL,
+  `telephone` varchar(256) NOT NULL,
+  `mail` varchar(256) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `classe` (`classe`),
   KEY `annee` (`annee`),
   KEY `_option` (`_option`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des étudiants';
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des étudiants';
 
 --
 -- Déchargement des données de la table `etudiants`
 --
 
 INSERT INTO `etudiants` (`id`, `nom`, `prenom`, `dateNaissance`, `classe`, `_option`, `annee`, `telephone`, `mail`) VALUES
-(23, 'AL GALMASH', 'yahya', '2023-06-08', 1, 1, 2, '0751068721', 'algalmash@gmail.com');
+(60, 'Y+F79VFzRHuGLsouda5VZpbW19GEL8ne7dgs1sCSsNw=', 'QBUgr5+uohchCTyZ5dvnjeP2EC6+UD+Vf3aSwv9GFGc=', '2023-06-12', 1, 1, 1, '0751068721', 'algalmash@gmail.com'),
+(61, 'BCo5JDAgRWOyDQBpalR3PoD/tkLj0jS7Tq22xlHp2eY=', 'GILRm66sfZl77XDn2Lx/wAmdvxOl+t5fQuu0yHvY22U=', '/GHaRmx8qlGbGvlQ5cz+71IFZIv6fX52JjKog7X/Z3A=', 2, 2, 2, 'YoS21lxozJD4sNqUVnt8y14PI2cyeO6gmUmOD5FWUsw=', 'MwHalfaShtF0PYxxcncyrIYiIO5Cyouoe2l5r2ZZq1M='),
+(62, '6zTM6zB7shS32W1aEmwqN2NKzbEFdAb2Odd1nG9oxrk=', 'VjVDVlxTMAv+QdK8qU96KZq3HpbLJRUgcghtjnNEGdI=', 'pnFOC8PF3ZfIYULl4P0g/xsypS9A/ZvqMKcDjnknw5c=', 2, 2, 2, 'KHMruDTJjCBxHzgpwdG5K4Kt+QH9+d4AXuN0m30mHaE=', 'DPIVGXJ6V0oWmU3VkA/rag7SsNIm0dTvi8phwpb+uZ4cPQczy0cpvrFkvJOjTK+U'),
+(63, 'ityeh033dLkDvizq0kdVa5uIW2WSHSbHWjL/B/qaoMw=', 'HlQQhdAV54wSil/07O5WVwrhku3xyowQUkw9x4D4uHE=', 'g7sPkKckkrWXgt+J4+gVbVHL10pR7j9v9VAoJ6SJuB0=', 2, 2, 2, 'BB7o2fJD6TNWLF9ndgeMzixZddezB+rMqok8+Ouh2cw=', 'rglyltyeItiRhLk5os2+GkfrgFnayew84Gl6TExQ/zDHF+zAhOspICQzjmV7nt7w');
 
 -- --------------------------------------------------------
 
@@ -214,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `options` (
   `option` varchar(32) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='TAble des options des BTS';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='TAble des options des BTS';
 
 --
 -- Déchargement des données de la table `options`
@@ -223,33 +244,7 @@ CREATE TABLE IF NOT EXISTS `options` (
 INSERT INTO `options` (`id`, `option`, `description`) VALUES
 (1, 'SLAM', 'Développeurs'),
 (2, 'SISR', 'Brancheurs de câbles'),
-(3, 'blabla', NULL),
-(4, 'blabla', NULL),
-(5, 'blabla', NULL),
-(6, '', NULL);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `services`
---
-
-DROP TABLE IF EXISTS `services`;
-CREATE TABLE IF NOT EXISTS `services` (
-  `id` smallint(6) NOT NULL AUTO_INCREMENT,
-  `service` varchar(64) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des services des entreprises';
-
---
--- Déchargement des données de la table `services`
---
-
-INSERT INTO `services` (`id`, `service`, `description`) VALUES
-(1, 'Développement web', ''),
-(2, 'Développement d applications', ''),
-(3, 'Informatique', NULL);
+(7, 'blabla', NULL);
 
 -- --------------------------------------------------------
 
@@ -269,14 +264,14 @@ CREATE TABLE IF NOT EXISTS `stages` (
   KEY `etudiant` (`etudiant`),
   KEY `entreprise` (`entreprise`),
   KEY `tuteur` (`tuteur`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des stages';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table des stages';
 
 --
 -- Déchargement des données de la table `stages`
 --
 
 INSERT INTO `stages` (`id`, `etudiant`, `entreprise`, `tuteur`, `dateDebut`, `dateFin`) VALUES
-(1, 23, 6, 1, '2023-06-06', '2023-06-30');
+(13, 60, 23, 2, '2023-06-06', '2023-06-30');
 
 -- --------------------------------------------------------
 
@@ -287,19 +282,44 @@ INSERT INTO `stages` (`id`, `etudiant`, `entreprise`, `tuteur`, `dateDebut`, `da
 DROP TABLE IF EXISTS `tuteurs`;
 CREATE TABLE IF NOT EXISTS `tuteurs` (
   `id` smallint(6) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(32) NOT NULL,
-  `prenom` varchar(32) NOT NULL,
-  `telephone` varchar(10) NOT NULL,
-  `mail` varchar(32) NOT NULL,
+  `nom` varchar(256) NOT NULL,
+  `prenom` varchar(256) NOT NULL,
+  `civilite` varchar(256) NOT NULL,
+  `fonction` varchar(64) NOT NULL,
+  `telephone` varchar(256) NOT NULL,
+  `mail` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `tuteurs`
 --
 
-INSERT INTO `tuteurs` (`id`, `nom`, `prenom`, `telephone`, `mail`) VALUES
-(1, 'toto', 'toto', '1111111111', 'toto@gmail.com');
+INSERT INTO `tuteurs` (`id`, `nom`, `prenom`, `civilite`, `fonction`, `telephone`, `mail`) VALUES
+(1, 'toto', 'toto', '', '', '1111111111', 'toto@gmail.com'),
+(2, 'bidul', 'bidul', '', '', '1111111111', 'bidul@gmail.com'),
+(3, 'blabla', 'blabla', '', '', '12121212', 'blabla@gmail.com'),
+(4, 'jaja', 'jaja', '', '', 'dcerv', 'jaja@gmail.com'),
+(5, 'cfzde', 'zezed', '', '', 'zecfze', 'ezdez@zed'),
+(6, 'AL GALMASH', 'yahya', '', '', '0751068721', 'jaja@gmail.com'),
+(7, 'test', 'test', 'monsieur', 'test', 'efhfeh', 'hhh@njj'),
+(8, 'bgrgvf', 'evfvf', 'madame', 'efvfb', 'bvrf', 'vvf@vv'),
+(9, 'dccsd', 'sccsd', 'monsieur', 'sdczsdc', 'cszde', 'csdez@sdcdsc'),
+(10, 'ujgyuuy', 'g,u,', 'madame', 'jujrt', 'ryfujuyj', 'uyjy@uyuyj'),
+(11, 'hhhh', 'g,u,', 'madame', 'jujrt', '1111111122', 'uyjy@uyuyj.dd'),
+(12, 'cjnkfdvkjnfdv', 'fehvefn', 'madame', 'ecdfv', '7474747474', 'eferf@erfre.fze'),
+(13, 'efcrf', 'ercrrc', 'monsieur', 'ecefcd', '0751068721', 'dreddre@dd.dd'),
+(14, 'efcrf', 'ercrrc', 'monsieur', 'ecefcd', '0751068721', 'dreddre@dd.dd'),
+(22, 'Dupont', 'Alice', 'madame', 'Responsable', '0123456789', 'alice.dupont@example.com'),
+(23, 'Dupont', 'Alice', 'madame', 'Responsable', '0123456789', 'alice.dupont@example.com'),
+(24, 'Dupont', 'Alice', 'madame', 'Responsable', '0123456789', 'alice.dupont@example.com'),
+(25, 'Dupont', 'Alice', 'madame', 'Responsable', '0123456789', 'alice.dupont@example.com'),
+(26, 'tartempion', 'maurice', 'madame', 'cascadeur', '0987654321', 'a@a.a'),
+(27, 'AL GALMASH', 'yahya', 'monsieur', 'xwcsc', '0751068721', 'sdvvc@ccd.d'),
+(28, 'AL GALMASH', 'yahya', 'monsieur', 'xwcsc', '0751068721', 'sdvvc@ccd.d'),
+(29, 'AL GALMASH', 'yahya', 'monsieur', 'xwcsc', '0751068721', 'sdvvc@ccd.d'),
+(30, 'sdfsdf', 'sdfdsf', 'monsieur', 'dsfdsfs', '0751068721', 'dd@dd.dd'),
+(31, 'sdfsdf', 'sdfdsf', 'monsieur', 'dsfdsfs', '0751068721', 'dd@dd.dd');
 
 --
 -- Contraintes pour les tables déchargées
@@ -316,7 +336,7 @@ ALTER TABLE `avoir`
 -- Contraintes pour la table `entreprises`
 --
 ALTER TABLE `entreprises`
-  ADD CONSTRAINT `entreprises_ibfk_1` FOREIGN KEY (`service`) REFERENCES `services` (`id`);
+  ADD CONSTRAINT `entreprises_ibfk_1` FOREIGN KEY (`service`) REFERENCES `activite` (`id`);
 
 --
 -- Contraintes pour la table `etudiants`
