@@ -1,0 +1,26 @@
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav .deconnexion {
+    margin-right: 30px;
+    width: 130px;
+    height: 38px;
+    background: #df622c;
+    color: #fff;
+    border: 3px solid white;
+    border-radius: 50px;
+    font-size: 20px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
